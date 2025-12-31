@@ -2,139 +2,483 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Meet the Teams</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise Competition Tracker</title>
 
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #fde2e4; /* cute pastel pink */
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fde2e4 0%, #ffd6e0 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .header {
       text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease;
     }
 
-    h1 {
-      padding: 20px;
+    .header h1 {
       color: #5a3d5c;
+      font-size: 3em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
 
-    h2 {
+    .header .month {
       color: #6a4c93;
-      margin-top: 40px;
+      font-size: 1.3em;
+      font-weight: 500;
     }
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
+    /* Team Race Section */
+    .race-section {
+      max-width: 1200px;
+      margin: 0 auto 50px;
+      background: white;
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      animation: fadeIn 1s ease;
+    }
+
+    .race-title {
+      text-align: center;
+      color: #5a3d5c;
+      font-size: 2em;
+      margin-bottom: 30px;
+    }
+
+    .race-track {
+      margin: 30px 0;
+    }
+
+    .team-race {
+      margin-bottom: 30px;
+    }
+
+    .team-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 1.3em;
+      font-weight: bold;
+    }
+
+    .team-a-label {
+      color: #ff6b9d;
+    }
+
+    .team-b-label {
+      color: #6a4c93;
+    }
+
+    .race-bar-container {
+      position: relative;
+      width: 100%;
+      height: 60px;
+      background: #f0f0f0;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .race-bar {
+      height: 100%;
+      border-radius: 30px;
+      transition: width 1.5s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 20px;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .race-bar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: shine 3s infinite;
+    }
+
+    .team-a-bar {
+      background: linear-gradient(90deg, #ff6b9d, #ff8fab);
+    }
+
+    .team-b-bar {
+      background: linear-gradient(90deg, #6a4c93, #8b6bb7);
+    }
+
+    .finish-line {
+      position: absolute;
+      right: 0;
+      top: -10px;
+      bottom: -10px;
+      width: 4px;
+      background: repeating-linear-gradient(
+        45deg,
+        #333,
+        #333 10px,
+        #fff 10px,
+        #fff 20px
+      );
+    }
+
+    /* Individual Trackers */
+    .team-section {
+      max-width: 1200px;
+      margin: 0 auto 40px;
+      animation: fadeIn 1.2s ease;
+    }
+
+    .team-header {
+      text-align: center;
+      font-size: 2.5em;
+      color: #5a3d5c;
+      margin-bottom: 30px;
       padding: 20px;
-      max-width: 1100px;
-      margin: auto;
-    }
-
-    .card {
-      background-color: #fff1f7;
+      background: white;
       border-radius: 20px;
-      padding: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
-    .card img {
+    .team-total {
+      text-align: center;
+      font-size: 1.5em;
+      color: #6a4c93;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .member-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .member-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    .member-photo {
       width: 100%;
       height: 200px;
       object-fit: cover;
       border-radius: 15px;
-      background-color: #ffd6e0; /* placeholder */
+      background: linear-gradient(135deg, #ffd6e0 0%, #ffc4d6 100%);
+      margin-bottom: 15px;
     }
 
-    .name {
-      font-size: 18px;
+    .member-name {
+      font-size: 1.4em;
       font-weight: bold;
+      color: #5a3d5c;
+      margin-bottom: 10px;
+    }
+
+    .member-minutes {
+      font-size: 2em;
+      font-weight: bold;
+      color: #ff6b9d;
+      margin: 15px 0;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 30px;
+      background: #f0f0f0;
+      border-radius: 15px;
+      overflow: hidden;
       margin-top: 10px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b9d, #ffa6c1);
+      border-radius: 15px;
+      transition: width 1s ease-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .team-b-card .progress-bar {
+      background: linear-gradient(90deg, #6a4c93, #8b6bb7);
+    }
+
+    .team-b-card .member-minutes {
       color: #6a4c93;
     }
 
-    .blurb {
-      font-size: 14px;
-      color: #444;
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes shine {
+      to {
+        left: 100%;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2em;
+      }
+
+      .race-section {
+        padding: 20px;
+      }
+
+      .members-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <h1>✨ Meet the Teams ✨</h1>
+  <div class="header">
+    <h1>Exercise Competition</h1>
+    <div class="month">January 2025</div>
+  </div>
+
+  <!-- Team Race -->
+  <div class="race-section">
+    <div class="race-title">The Race</div>
+
+    <div class="race-track">
+      <div class="team-race">
+        <div class="team-label team-a-label">
+          <span>🌸 Team A</span>
+        </div>
+        <div class="race-bar-container">
+          <div class="race-bar team-a-bar" id="teamABar">
+            <span id="teamATotal">0 min</span>
+          </div>
+          <div class="finish-line"></div>
+        </div>
+      </div>
+
+      <div class="team-race">
+        <div class="team-label team-b-label">
+          <span>🌼 Team B</span>
+        </div>
+        <div class="race-bar-container">
+          <div class="race-bar team-b-bar" id="teamBBar">
+            <span id="teamBTotal">0 min</span>
+          </div>
+          <div class="finish-line"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Team A -->
-  <h2>🌸 Team A 🌸</h2>
-  <div class="container">
+  <div class="team-section">
+    <div class="team-header">🌸 Team A 🌸</div>
+    <div class="team-total">Team Total: <span id="teamADisplay">0</span> minutes</div>
 
-    <div class="card">
-      <img src="person1.jpg" alt="Person 1">
-      <div class="name">Person One</div>
-      <div class="blurb">Loves art, music, and creative projects.</div>
+    <div class="members-grid">
+      <div class="member-card">
+        <img src="person1.jpg" alt="Person 1" class="member-photo">
+        <div class="member-name">Person One</div>
+        <div class="member-minutes"><span class="minutes-value">120</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <img src="person2.jpg" alt="Person 2" class="member-photo">
+        <div class="member-name">Person Two</div>
+        <div class="member-minutes"><span class="minutes-value">150</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <img src="person3.jpg" alt="Person 3" class="member-photo">
+        <div class="member-name">Person Three</div>
+        <div class="member-minutes"><span class="minutes-value">200</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <img src="person4.jpg" alt="Person 4" class="member-photo">
+        <div class="member-name">Person Four</div>
+        <div class="member-minutes"><span class="minutes-value">175</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card">
+        <img src="person5.jpg" alt="Person 5" class="member-photo">
+        <div class="member-name">Person Five</div>
+        <div class="member-minutes"><span class="minutes-value">180</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="card">
-      <img src="person2.jpg" alt="Person 2">
-      <div class="name">Person Two</div>
-      <div class="blurb">Always curious and enjoys learning new things.</div>
-    </div>
-
-    <div class="card">
-      <img src="person3.jpg" alt="Person 3">
-      <div class="name">Person Three</div>
-      <div class="blurb">A team player who enjoys helping others.</div>
-    </div>
-
-    <div class="card">
-      <img src="person4.jpg" alt="Person 4">
-      <div class="name">Person Four</div>
-      <div class="blurb">Creative thinker with lots of ideas.</div>
-    </div>
-
-    <div class="card">
-      <img src="person5.jpg" alt="Person 5">
-      <div class="name">Person Five</div>
-      <div class="blurb">Loves technology and problem-solving.</div>
-    </div>
-
   </div>
 
   <!-- Team B -->
-  <h2>🌼 Team B 🌼</h2>
-  <div class="container">
+  <div class="team-section">
+    <div class="team-header">🌼 Team B 🌼</div>
+    <div class="team-total">Team Total: <span id="teamBDisplay">0</span> minutes</div>
 
-    <div class="card">
-      <img src="person6.jpg" alt="Person 6">
-      <div class="name">Person Six</div>
-      <div class="blurb">Enjoys teamwork and positive vibes.</div>
+    <div class="members-grid">
+      <div class="member-card team-b-card">
+        <img src="person6.jpg" alt="Person 6" class="member-photo">
+        <div class="member-name">Person Six</div>
+        <div class="member-minutes"><span class="minutes-value">190</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card team-b-card">
+        <img src="person7.jpg" alt="Person 7" class="member-photo">
+        <div class="member-name">Person Seven</div>
+        <div class="member-minutes"><span class="minutes-value">165</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card team-b-card">
+        <img src="person8.jpg" alt="Person 8" class="member-photo">
+        <div class="member-name">Person Eight</div>
+        <div class="member-minutes"><span class="minutes-value">210</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card team-b-card">
+        <img src="person9.jpg" alt="Person 9" class="member-photo">
+        <div class="member-name">Person Nine</div>
+        <div class="member-minutes"><span class="minutes-value">140</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="member-card team-b-card">
+        <img src="person10.jpg" alt="Person 10" class="member-photo">
+        <div class="member-name">Person Ten</div>
+        <div class="member-minutes"><span class="minutes-value">195</span> min</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="card">
-      <img src="person7.jpg" alt="Person 7">
-      <div class="name">Person Seven</div>
-      <div class="blurb">Passionate about creativity and design.</div>
-    </div>
-
-    <div class="card">
-      <img src="person8.jpg" alt="Person 8">
-      <div class="name">Person Eight</div>
-      <div class="blurb">Always motivated and ready to learn.</div>
-    </div>
-
-    <div class="card">
-      <img src="person9.jpg" alt="Person 9">
-      <div class="name">Person Nine</div>
-      <div class="blurb">Brings fun energy to every project.</div>
-    </div>
-
-    <div class="card">
-      <img src="person10.jpg" alt="Person 10">
-      <div class="name">Person Ten</div>
-      <div class="blurb">Kind, creative, and full of ideas.</div>
-    </div>
-
   </div>
+
+  <script>
+    // Calculate totals and update displays
+    function updateTracker() {
+      // Get all Team A minutes
+      const teamACards = document.querySelectorAll('.team-section:nth-of-type(1) .minutes-value');
+      const teamAMinutes = Array.from(teamACards).map(el => parseInt(el.textContent));
+      const teamATotal = teamAMinutes.reduce((sum, val) => sum + val, 0);
+
+      // Get all Team B minutes
+      const teamBCards = document.querySelectorAll('.team-section:nth-of-type(2) .minutes-value');
+      const teamBMinutes = Array.from(teamBCards).map(el => parseInt(el.textContent));
+      const teamBTotal = teamBMinutes.reduce((sum, val) => sum + val, 0);
+
+      // Update team totals
+      document.getElementById('teamADisplay').textContent = teamATotal;
+      document.getElementById('teamBDisplay').textContent = teamBTotal;
+      document.getElementById('teamATotal').textContent = teamATotal + ' min';
+      document.getElementById('teamBTotal').textContent = teamBTotal + ' min';
+
+      // Calculate max for percentage
+      const maxMinutes = Math.max(teamATotal, teamBTotal);
+      const maxIndividual = Math.max(...teamAMinutes, ...teamBMinutes);
+
+      // Update race bars
+      const teamAPercent = maxMinutes > 0 ? (teamATotal / maxMinutes) * 100 : 0;
+      const teamBPercent = maxMinutes > 0 ? (teamBTotal / maxMinutes) * 100 : 0;
+
+      setTimeout(() => {
+        document.getElementById('teamABar').style.width = teamAPercent + '%';
+        document.getElementById('teamBBar').style.width = teamBPercent + '%';
+      }, 100);
+
+      // Update individual progress bars
+      const allProgressBars = document.querySelectorAll('.progress-bar');
+      allProgressBars.forEach((bar, index) => {
+        const minutes = index < 5 ? teamAMinutes[index] : teamBMinutes[index - 5];
+        const percent = maxIndividual > 0 ? (minutes / maxIndividual) * 100 : 0;
+
+        setTimeout(() => {
+          bar.style.width = percent + '%';
+        }, 100);
+      });
+    }
+
+    // Run on page load
+    window.addEventListener('load', updateTracker);
+  </script>
 
 </body>
 </html>
