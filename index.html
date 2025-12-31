@@ -219,6 +219,8 @@
       padding: 25px;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      cursor: pointer;
     }
 
     .member-card:hover {
@@ -226,19 +228,7 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.15);
     }
 
-    .member-photo {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-      border-radius: 15px;
-      background: linear-gradient(135deg, #ffd6e0 0%, #ffc4d6 100%);
-      margin-bottom: 15px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-      position: relative;
-    }
-
-    .member-photo.farting {
+    .member-card.farting {
       animation: tiltAndFart 0.6s ease;
     }
 
@@ -254,11 +244,20 @@
       }
     }
 
+    .member-photo {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #ffd6e0 0%, #ffc4d6 100%);
+      margin-bottom: 15px;
+    }
+
     .fart-cloud {
       position: absolute;
       bottom: 10px;
       left: 10px;
-      font-size: 2em;
+      font-size: 8em;
       opacity: 0;
       animation: fartAnimation 1.5s ease-out forwards;
       pointer-events: none;
@@ -593,13 +592,13 @@
       });
     }
 
-    // Fart effect on photo click
+    // Fart effect on card click
     function addFartEffect() {
-      const photos = document.querySelectorAll('.member-photo');
+      const cards = document.querySelectorAll('.member-card');
 
-      photos.forEach(photo => {
-        photo.addEventListener('click', function() {
-          // Add tilt animation
+      cards.forEach(card => {
+        card.addEventListener('click', function() {
+          // Add tilt animation to the whole card
           this.classList.add('farting');
 
           // Create fart cloud
@@ -607,10 +606,8 @@
           fartCloud.className = 'fart-cloud';
           fartCloud.textContent = '💨';
 
-          // Position it relative to the card
-          const card = this.closest('.member-card');
-          card.style.position = 'relative';
-          card.appendChild(fartCloud);
+          // Add fart cloud to the card
+          this.appendChild(fartCloud);
 
           // Remove animation class after it completes
           setTimeout(() => {
