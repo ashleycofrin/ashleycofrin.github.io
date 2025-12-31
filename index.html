@@ -233,6 +233,50 @@
       border-radius: 15px;
       background: linear-gradient(135deg, #ffd6e0 0%, #ffc4d6 100%);
       margin-bottom: 15px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      position: relative;
+    }
+
+    .member-photo.farting {
+      animation: tiltAndFart 0.6s ease;
+    }
+
+    @keyframes tiltAndFart {
+      0% {
+        transform: rotate(0deg);
+      }
+      50% {
+        transform: rotate(8deg);
+      }
+      100% {
+        transform: rotate(0deg);
+      }
+    }
+
+    .fart-cloud {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      font-size: 2em;
+      opacity: 0;
+      animation: fartAnimation 1.5s ease-out forwards;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    @keyframes fartAnimation {
+      0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.5);
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-30px, -50px) scale(1.5);
+      }
     }
 
     .member-name {
@@ -549,10 +593,43 @@
       });
     }
 
+    // Fart effect on photo click
+    function addFartEffect() {
+      const photos = document.querySelectorAll('.member-photo');
+
+      photos.forEach(photo => {
+        photo.addEventListener('click', function() {
+          // Add tilt animation
+          this.classList.add('farting');
+
+          // Create fart cloud
+          const fartCloud = document.createElement('div');
+          fartCloud.className = 'fart-cloud';
+          fartCloud.textContent = '💨';
+
+          // Position it relative to the card
+          const card = this.closest('.member-card');
+          card.style.position = 'relative';
+          card.appendChild(fartCloud);
+
+          // Remove animation class after it completes
+          setTimeout(() => {
+            this.classList.remove('farting');
+          }, 600);
+
+          // Remove fart cloud after animation
+          setTimeout(() => {
+            fartCloud.remove();
+          }, 1500);
+        });
+      });
+    }
+
     // Run on page load
     window.addEventListener('load', () => {
       createFloatingClocks();
       updateTracker();
+      addFartEffect();
     });
   </script>
 
