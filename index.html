@@ -17,6 +17,44 @@
       background: linear-gradient(135deg, #fde2e4 0%, #ffd6e0 100%);
       min-height: 100vh;
       padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Floating Clocks Background */
+    .clock-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-clock {
+      position: absolute;
+      font-size: 3em;
+      opacity: 0.15;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+      }
+    }
+
+    /* Ensure content is above clocks */
+    .header,
+    .race-section,
+    .team-section {
+      position: relative;
+      z-index: 1;
     }
 
     .header {
@@ -290,6 +328,9 @@
 
 <body>
 
+  <!-- Floating Clocks Background -->
+  <div class="clock-container" id="clockContainer"></div>
+
   <div class="header">
     <h1>Exercise Competition</h1>
     <div class="month">January 2025</div>
@@ -433,6 +474,38 @@
   </div>
 
   <script>
+    // Create floating clocks
+    function createFloatingClocks() {
+      const container = document.getElementById('clockContainer');
+      const clockEmojis = ['🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕛', '⏰', '⏱️', '⏲️'];
+      const numberOfClocks = 20;
+
+      for (let i = 0; i < numberOfClocks; i++) {
+        const clock = document.createElement('div');
+        clock.className = 'floating-clock';
+        clock.textContent = clockEmojis[Math.floor(Math.random() * clockEmojis.length)];
+
+        // Random horizontal position
+        clock.style.left = Math.random() * 100 + '%';
+
+        // Random starting position (start below viewport)
+        clock.style.top = Math.random() * 100 + 100 + 'vh';
+
+        // Random size variation
+        const size = 0.5 + Math.random() * 1.5;
+        clock.style.fontSize = size + 'em';
+
+        // Random animation duration (slower = more variety)
+        const duration = 15 + Math.random() * 25;
+        clock.style.animationDuration = duration + 's';
+
+        // Random delay to stagger the animations
+        clock.style.animationDelay = Math.random() * 5 + 's';
+
+        container.appendChild(clock);
+      }
+    }
+
     // Calculate totals and update displays
     function updateTracker() {
       // Get all Team A minutes
@@ -477,7 +550,10 @@
     }
 
     // Run on page load
-    window.addEventListener('load', updateTracker);
+    window.addEventListener('load', () => {
+      createFloatingClocks();
+      updateTracker();
+    });
   </script>
 
 </body>
